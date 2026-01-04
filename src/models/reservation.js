@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 /* -------------------------------------------------------
     | FULLSTACK TEAM | NODEJS / EXPRESS |
 ------------------------------------------------------- */
-const { mongoose } = require('../configs/dbConnection')
+const { mongoose } = require("../configs/dbConnection");
 /* ------------------------------------------------------- *
 {
     "userId": "65343222b67e9681f937f001",
@@ -18,3 +18,17 @@ const { mongoose } = require('../configs/dbConnection')
 }
 /* ------------------------------------------------------- */
 // Reservation Model:
+const { mongoose } = require("../configs/dbConnection");
+
+// Reservation Model:
+const ReservationSchema = new mongoose.Schema(
+  {},
+  {
+    collection: "reservations",
+    timestamps: true,
+  },
+);
+
+// Export:
+
+module.exports = mongoose.model("Reservation", ReservationSchema);
