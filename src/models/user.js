@@ -66,8 +66,6 @@ const UserSchema = new mongoose.Schema(
   },
   { collection: "users", timestamps: true },
 );
-UserSchema.plugin(uniqueValidator, {
-  message: "This {PATH} is exist",
-});
+
 /* ------------------------------------------------------- */
 module.exports = mongoose.model("User", UserSchema);
