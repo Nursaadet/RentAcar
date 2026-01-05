@@ -15,6 +15,7 @@
 /* ------------------------------------------------------- */
 const { mongoose } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passwordEncrypt");
+const uniqueValidator = require("mongoose-unique-validator");
 
 // User Model:
 const UserSchema = new mongoose.Schema(
@@ -66,6 +67,10 @@ const UserSchema = new mongoose.Schema(
   },
   { collection: "users", timestamps: true },
 );
+
+UserSchema.plugin(uniqueValidator, {
+  message: "This {PATH} is exist",
+});
 
 /* ------------------------------------------------------- */
 module.exports = mongoose.model("User", UserSchema);

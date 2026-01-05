@@ -1,8 +1,6 @@
-"use strict"
+"use strict";
 /* -------------------------------------------------------
     | FULLSTACK TEAM | NODEJS / EXPRESS |
-------------------------------------------------------- */
-
 /* ------------------------------------------------------- *
 {
     "plateNumber": "34ABC123",
@@ -32,14 +30,14 @@
 /* ------------------------------------------------------- */
 const { mongoose } = require("../configs/dbConnection");
 const uniqueValidator = require("mongoose-unique-validator");
-
+// Car Model:
 
 const CarSchema = new mongoose.Schema(
   {},
   {
     collection: "cars",
     timestamps: true,
-  },
+  }
 );
 
 CarSchema.plugin(uniqueValidator, {
@@ -48,3 +46,4 @@ CarSchema.plugin(uniqueValidator, {
 // Export:
 
 module.exports = mongoose.model("Car", CarSchema);
+// Car Model:
