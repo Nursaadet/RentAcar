@@ -22,11 +22,9 @@ module.exports = {
                 </ul>
             `
         */
-
+    //ISO 8601 YYYY-MM-DDTHH:MM:SS
     // URL?startDate=2024-01-01&endDate=2024-01-10
-    // const { startDate, endDate } = req.query;
-    const startDate = "2024-10-10";
-    const endDate = "2024-10-20";
+    const { startDate, endDate } = req.query;
 
     //startDate ve endDate validasyonu
     dateValidation(startDate, endDate);
