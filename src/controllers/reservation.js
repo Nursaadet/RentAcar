@@ -28,8 +28,6 @@ module.exports = {
 
     const data = await res.getModelList(Reservation, customFilter);
 
-    return res.send(data);
-
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Reservation, customFilter),
@@ -51,14 +49,14 @@ module.exports = {
         */
     // "Admin-staf değilse" veya "UserId göndermişmemişse" req.user'dan al:
     if (!req.user.isAdmin && !req.user.isStaff) {
-      req.body.userId = req.user._id;
+      req.body.userId = req.user.id;
     } else if (!req.body?.userId) {
-      req.body.userId = req.user._id;
+      req.body.userId = req.user.id;
     }
     console.log(req.user);
     // createdId ve updatedId verisini req.user'dan al:
-    req.body.createdId = req.user._id;
-    req.body.updatedId = req.user._id;
+    req.body.createdId = req.user.id;
+    req.body.updatedId = req.user.id;
 
     const data = await Reservation.create(req.body);
 

@@ -34,10 +34,10 @@ module.exports = {
         if (user.isActive) {
           /* TOKEN */
 
-          let tokenData = await Token.findOne({ userId: user._id });
+          let tokenData = await Token.findOne({ userId: user.id });
 
           if (!tokenData) {
-            const tokenKey = passwordEncrypt(user._id + Date.now());
+            const tokenKey = passwordEncrypt(user.id + Date.now());
             tokenData = await Token.create({
               userId: user._id,
               token: tokenKey,
