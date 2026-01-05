@@ -28,6 +28,8 @@ module.exports = {
 
     const data = await res.getModelList(Reservation, customFilter);
 
+    return res.send(data);
+
     res.status(200).send({
       error: false,
       details: await res.getModelListDetails(Reservation, customFilter),
@@ -53,9 +55,10 @@ module.exports = {
     } else if (!req.body?.userId) {
       req.body.userId = req.user._id;
     }
+    console.log(req.user);
     // createdId ve updatedId verisini req.user'dan al:
-    req.body.createdId = req.user.id;
-    req.body.updatedId = req.user.id;
+    req.body.createdId = req.user._id;
+    req.body.updatedId = req.user._id;
 
     const data = await Reservation.create(req.body);
 

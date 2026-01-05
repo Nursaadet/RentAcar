@@ -59,5 +59,6 @@ module.exports = {
         403
       );
     }
+    next();
   },
 };
