@@ -5,10 +5,11 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 /* ------------------------------------------------------- */
 // Required Modules:
-
+app.use(cors());
 // envVariables to process.env:
 const HOST = process.env?.HOST || "127.0.0.1";
 const PORT = process.env?.PORT || 8000;
