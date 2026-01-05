@@ -1,8 +1,6 @@
 "use strict";
 /* -------------------------------------------------------
     | FULLSTACK TEAM | NODEJS / EXPRESS |
-------------------------------------------------------- */
-
 /* ------------------------------------------------------- *
 {
     "username": "test",
@@ -17,7 +15,6 @@ const { mongoose } = require("../configs/dbConnection");
 const emailValidation = require("../helpers/emailValidation");
 const passwordEncrypt = require("../helpers/passwordEncrypt");
 const uniqueValidator = require("mongoose-unique-validator");
-
 // User Model:
 const UserSchema = new mongoose.Schema(
   {

@@ -20,13 +20,19 @@ module.exports = {
                 </ul>
             `
         */
+
     //yetkisine göre revervasyonlara erişim ver
     let customFilter = {};
     if (!req.user.isAdmin && !req.user.isStaff) {
       customFilter = { userId: req.user.id };
     }
 
-    const data = await res.getModelList(Reservation, customFilter);
+    const data = await res.getModelList(Reservation, customFilter, [
+      { path: "userId", select: "username firstName lastName" },
+      { path: "carId", select: "brand model" },
+      { path: "createdId", select: "username" },
+      { path: "updatedId", select: "username" },
+    ]);
 
     res.status(200).send({
       error: false,
@@ -78,7 +84,12 @@ module.exports = {
     const data = await Reservation.findOne({
       _id: req.params.id,
       ...customFilter,
-    });
+    }).populate([
+      { path: "userId", select: "username firstName lastName" },
+      { path: "carId", select: "brand model" },
+      { path: "createdId", select: "username" },
+      { path: "updatedId", select: "username" },
+    ]);
     //{_id:req.params.id,userId: req.user.id  }
 
     res.status(200).send({

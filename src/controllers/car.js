@@ -5,6 +5,8 @@
 // Car Controller:
 
 const Car = require("../models/car");
+const dateValidation = require("../helpers/dateValidation");
+const Reservation = require("../models/reservation");
 
 module.exports = {
   list: async (req, res) => {
@@ -21,10 +23,31 @@ module.exports = {
             `
         */
 
-        // Musait olmayan araçları listeleme
+    // URL?startDate=2024-01-01&endDate=2024-01-10
+    // const { startDate, endDate } = req.query;
+    const startDate = "2024-10-10";
+    const endDate = "2024-10-20";
+
+    //startDate ve endDate validasyonu
+    dateValidation(startDate, endDate);
+
+    // Musait olmayan araçları listeleme
     let customFilter = { isAvailable: true };
 
-    const data = await res.getModelList(Car, customFilter);
+    const reservedCarIds = await Reservation.find(
+      {
+        startDate: { $lte: endDate },
+        endDate: { $gte: startDate },
+      },
+      { _id: 0, carId: 1 }
+    ).distinct("carId");
+
+    customFilter._id = { $nin: reservedCarIds };
+
+    const data = await res.getModelList(Car, customFilter, [
+      { path: "createdId", select: "username" },
+      { path: "updatedId", select: "username" },
+    ]);
 
     res.status(200).send({
       error: false,
@@ -62,7 +85,10 @@ module.exports = {
             #swagger.summary = "Get Single Car"
         */
 
-    const data = await Car.findOne({ _id: req.params.id });
+    const data = await Car.findOne({ _id: req.params.id }).populate([
+      { path: "createdId", select: "username" },
+      { path: "updatedId", select: "username" },
+    ]);
 
     res.status(200).send({
       error: false,
@@ -82,11 +108,10 @@ module.exports = {
                 }
             }
         */
-
     // updatedId verisini req.user'dan al:
-    req.body.updatedId = req.user._id;
+    req.body.updatedId = req.user.id;
 
-    const data = await Car.updateOne({ _id: req.params.id }, req.body, {
+    const data = await Car.updateOne({ _id: req.prams.id }, req.body, {
       runValidators: true,
     });
 
