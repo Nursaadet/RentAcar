@@ -1,6 +1,8 @@
 "use strict";
 /* -------------------------------------------------------
-    | FULLSTACK TEAM | NODEJS / EXPRESS |
+    NODEJS EXPRESS | CLARUSWAY FullStack Team
+------------------------------------------------------- */
+const { mongoose } = require("../configs/dbConnection");
 /* ------------------------------------------------------- *
 {
     "userId": "65343222b67e9681f937f001",
@@ -16,17 +18,53 @@
 }
 /* ------------------------------------------------------- */
 // Reservation Model:
-const { mongoose } = require("../configs/dbConnection");
 
-// Reservation Model:
 const ReservationSchema = new mongoose.Schema(
-  {},
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    carId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Car",
+      required: true,
+    },
+    //begin, finish,reservationStart ve reservationEnd
+    startDate: {
+      type: Date,
+      required: true,
+    },
+
+    endDate: {
+      type: Date,
+      required: true,
+    },
+
+    amount: {
+      type: Number,
+      required: true,
+    },
+
+    createdId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    updatedId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
   {
     collection: "reservations",
     timestamps: true,
-  },
+  }
 );
 
 // Export:
-
 module.exports = mongoose.model("Reservation", ReservationSchema);
