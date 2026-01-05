@@ -20,6 +20,11 @@ module.exports = {
                 </ul>
             `
         */
+    //yetkisine göre revervasyonlara erişim ver
+    let customFilter = {};
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      customFilter = { userId: req.user.id };
+    }
 
     const data = await res.getModelList(Reservation, customFilter);
 
@@ -42,6 +47,15 @@ module.exports = {
                 }
             }
         */
+    // "Admin-staf değilse" veya "UserId göndermişmemişse" req.user'dan al:
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      req.body.userId = req.user._id;
+    } else if (!req.body?.userId) {
+      req.body.userId = req.user._id;
+    }
+    // createdId ve updatedId verisini req.user'dan al:
+    req.body.createdId = req.user.id;
+    req.body.updatedId = req.user.id;
 
     const data = await Reservation.create(req.body);
 
@@ -56,8 +70,15 @@ module.exports = {
             #swagger.tags = ["Reservations"]
             #swagger.summary = "Get Single Reservation"
         */
-
-    const data = await Reservation.findOne(customFilter);
+    let customFilter = {};
+    if (!req.user.isAdmin && !req.user.isStaff) {
+      customFilter = { userId: req.user.id };
+    }
+    const data = await Reservation.findOne({
+      _id: req.params.id,
+      ...customFilter,
+    });
+    //{_id:req.params.id,userId: req.user.id  }
 
     res.status(200).send({
       error: false,
@@ -77,8 +98,13 @@ module.exports = {
                 }
             }
         */
+    if (!req.user.isAdmin) {
+      delete req.body.userId;
+    }
+    //güncelleyen kişi giriş yapmış kullanıcı
+    req.body.updatedId = req.user.id;
 
-    const data = await Reservation.updateOne(customFilter, req.body, {
+    const data = await Reservation.updateOne({ _id: req.params.id }, req.body, {
       runValidators: true,
     });
 

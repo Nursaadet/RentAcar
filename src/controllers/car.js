@@ -21,7 +21,8 @@ module.exports = {
             `
         */
 
-    const data = await res.getModelList(Car, { isAvailable: true });
+    const customFilter = { isAvailable: true };
+    const data = await res.getModelList(Car, customFilter);
 
     res.status(200).send({
       error: false,
