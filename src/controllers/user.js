@@ -6,7 +6,6 @@
 
 const User = require("../models/user");
 const passwordValidation = require("../helpers/passwordValidation");
-
 module.exports = {
   list: async (req, res) => {
     /*
@@ -21,9 +20,8 @@ module.exports = {
                 </ul>
             `
         */
-
     let customFilter = { isAdmin: false };
-    if (req.user.isAdmin) {
+    if (req.user?.isAdmin) {
       customFilter = {};
       //delete customFilter.isAdmin
     }
@@ -31,7 +29,7 @@ module.exports = {
 
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(User),
+      details: await res.getModelListDetails(User, customFilter),
       data,
     });
   },
@@ -44,19 +42,14 @@ module.exports = {
                 in: 'body',
                 required: true,
                 schema: {
-                    "username": "test",
-                    "password": "1234",
-                    "email": "test@site.com",
-                    "isActive": true,
-                    "isStaff": false,
-                    "isAdmin": false,
+                   $ref:"#/definitions/User"
                 }
             }
         */
     passwordValidation(req?.body?.password);
     req.body.isAdmin = false;
     req.body.isStaff = false;
-    //req.body.isStaff= req.user.isAdmin? req.body.isStaff || false;s
+    //req.body.isStaff= req.user.isAdmin? req.body.isStaff || false;
     const data = await User.create(req.body);
 
     res.status(201).send({
@@ -76,6 +69,7 @@ module.exports = {
     //     req.params.id = req.user.id
     // }
     // const data = await User.findOne({ _id: req.params.id })
+
     // const id = req.user.isAdmin ? req.params.id : req.user.id;
 
     let customFilter = { _id: req.user.id };
@@ -85,6 +79,7 @@ module.exports = {
       customFilter = { _id: req.params.id, isAdmin: false };
     }
     const data = await User.findOne(customFilter);
+
     res.status(200).send({
       error: false,
       data,
@@ -98,13 +93,8 @@ module.exports = {
             #swagger.parameters['body'] = {
                 in: 'body',
                 required: true,
-                schema: {
-                    "username": "test",
-                    "password": "1234",
-                    "email": "test@site.com",
-                    "isActive": true,
-                    "isStaff": false,
-                    "isAdmin": false,
+               schema: {
+                   $ref:"#/definitions/User"
                 }
             }
         */
@@ -128,8 +118,8 @@ module.exports = {
       customFilter = { _id: req.params.id, isAdmin: false };
     }
     //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
-    if (!req.user.isAdmin) req.params.id = req.user._id;
-    const data = await User.updateOne({ _id: req.params.id }, req.body, {
+    // if (!req.user.isAdmin) req.params.id = req.user._id;
+    const data = await User.updateOne(customFilter, req.body, {
       runValidators: true,
     });
 
@@ -147,6 +137,7 @@ module.exports = {
         */
 
     const data = await User.deleteOne({ _id: req.params.id });
+
     res.status(data.deletedCount ? 204 : 404).send({
       error: !data.deletedCount,
       data,
