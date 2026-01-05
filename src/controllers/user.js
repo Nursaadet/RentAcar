@@ -22,7 +22,12 @@ module.exports = {
             `
         */
 
-    const data = await res.getModelList(User);
+    let customFilter = { isAdmin: false };
+    if (req.user.isAdmin) {
+      customFilter = {};
+      //delete customFilter.isAdmin
+    }
+    const data = await res.getModelList(User, customFilter);
 
     res.status(200).send({
       error: false,
@@ -49,6 +54,9 @@ module.exports = {
             }
         */
     passwordValidation(req?.body?.password);
+    req.body.isAdmin = false;
+    req.body.isStaff = false;
+    //req.body.isStaff= req.user.isAdmin? req.body.isStaff || false;s
     const data = await User.create(req.body);
 
     res.status(201).send({
@@ -68,9 +76,15 @@ module.exports = {
     //     req.params.id = req.user.id
     // }
     // const data = await User.findOne({ _id: req.params.id })
+    // const id = req.user.isAdmin ? req.params.id : req.user.id;
 
-    const id = req.user.isAdmin ? req.params.id : req.user.id;
-    const data = await User.findOne({ _id: id });
+    let customFilter = { _id: req.user.id };
+    if (req.user.isAdmin) {
+      customFilter = { _id: req.params.id };
+    } else if (req.user.isStaff) {
+      customFilter = { _id: req.params.id, isAdmin: false };
+    }
+    const data = await User.findOne(customFilter);
     res.status(200).send({
       error: false,
       data,
@@ -94,7 +108,25 @@ module.exports = {
                 }
             }
         */
+    passwordValidation(req?.body?.password);
+    delete req.body.isAdmin;
 
+    if (!req.user.isAdmin) {
+      delete req.body.isStaff;
+    }
+    // if ((req.body.isStaff || req.body.isAdmin) && !req.user.isAdmin ) {
+    //   throw new CustomError(
+    //     "You are not authorized to set admin or staff privileges.",
+    //     403,
+    //   );
+    // }
+
+    let customFilter = { _id: req.user.id };
+    if (req.user.isAdmin) {
+      customFilter = { _id: req.params.id };
+    } else if (req.user.isStaff) {
+      customFilter = { _id: req.params.id, isAdmin: false };
+    }
     //? Yetkisiz kullanıcının başka bir kullanıcıyı yönetmesini engelle (sadece kendi verileri):
     if (!req.user.isAdmin) req.params.id = req.user._id;
     const data = await User.updateOne({ _id: req.params.id }, req.body, {
