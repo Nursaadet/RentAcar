@@ -103,7 +103,7 @@ module.exports = {
     //Bir günlük araç kiralaam bedelini öğren
     const dailyCost = await Car.findOne(
       { _id: req.body.carId },
-      { _id: 0, pricePerDay }
+      { _id: 0, pricePerDay:1 }
     ).then((car) => Number(car.pricePerDay));
 
     req.body.amount = dailyCost * totalDays;
