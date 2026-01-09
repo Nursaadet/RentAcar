@@ -39,7 +39,7 @@ module.exports = {
           if (!tokenData) {
             const tokenKey = passwordEncrypt(user.id + Date.now());
             tokenData = await Token.create({
-              userId: user._id,
+              userId: user.id,
               token: tokenKey,
             });
           }
@@ -55,7 +55,7 @@ module.exports = {
           });
           // console.log('accessToken', accessToken)
 
-          const refreshData = { id: user._id, password: user.password }; // Checkable data.
+          const refreshData = { id: user.id, password: user.password }; // Checkable data.
           const refreshTime = "3d";
           const refreshToken = jwt.sign(refreshData, process.env.REFRESH_KEY, {
             expiresIn: refreshTime,
